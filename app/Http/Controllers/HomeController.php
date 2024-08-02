@@ -14,32 +14,38 @@ class HomeController extends Controller
 {
     public function redirect()
     {
+
         // Check if the user is authenticated
         if (Auth::check()) {
-            // Check if the authenticated user is a regular user
-            if (Auth::user()->userType == '0') {
+            $user = Auth::user();
+
+            // Check if the authenticated user is a regular user or admin
+            if ($user->userType === '1') {
+                return redirect()->route('showappointments');
+            } elseif ($user->userType === '0') {
+                $pickedDates = Appointment::pluck('date')->toArray();
                 $doctors = Doctor::all();
-                return view('user.home', compact('doctors'));
+                return view('user.home', compact('doctors', 'pickedDates'));
+            } else {
+                return redirect()->back()->withErrors('Unauthorized access.');
             }
-            // Check if the authenticated user is a doctor
-            elseif (Auth::guard('doctor')->check()) {
-                $doctor = Auth::guard('doctor')->user();
-                return view('doctor.home', compact('doctor'));
-            }
-            // If the user is not a regular user or a doctor, assume they are an admin
-            else {
-                return view('admin.my_appointments');
-            }
-        } else {
-            // Redirect back if the user is not authenticated
-            return redirect()->back();
         }
+
+        // Check if the authenticated user is a doctor
+        $doctor = Doctor::where('email', Auth::user()->email)->first();
+        if ($doctor) {
+            return redirect()->route('doctor.home');
+        }
+
+        // Redirect back if the user is not authenticated
+        return redirect()->back();
     }
 
     public function index()
     {
+        $pickedDates = Appointment::pluck('date')->toArray();
         $doctors = Doctor::all();
-        return view('user.home', compact('doctors'));
+        return view('user.home', compact('doctors', 'pickedDates'));
     }
 
     public function StoreAppointments(Request $request){

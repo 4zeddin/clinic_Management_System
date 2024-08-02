@@ -1,5 +1,5 @@
 <x-guest-layout>
-  <link rel="stylesheet" href="../assets/css/bootstrap.css">
+    <link rel="stylesheet" href="../assets/css/bootstrap.css">
     <x-authentication-card>
         <x-slot name="logo">
             <h3 class="text-black font-weight-bold"><span style="color: #00d9a5">One</span>-Health</h3>
@@ -16,6 +16,11 @@
         <form method="POST" action="{{ route('login') }}">
             @csrf
 
+            <div class="flex justify-end">
+        <a href="{{ route('doctor.login.form') }}" class="text-sm text-gray-600 hover:text-gray-900">
+            Log in as a Doctor
+        </a>
+    </div>
             <div>
                 <x-label for="email" value="{{ __('Email') }}" />
                 <x-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
@@ -26,11 +31,12 @@
                 <x-input id="password" class="block mt-1 w-full" type="password" name="password" required autocomplete="current-password" />
             </div>
 
-            <div class="block mt-4">
+            <div class="block mt-4 d-flex justify-content-between align-items-center">
                 <label for="remember_me" class="flex items-center">
                     <x-checkbox id="remember_me" name="remember" />
                     <span class="ms-2 text-sm text-gray-600">{{ __('Remember me') }}</span>
                 </label>
+                <p class="text-sm text-gray-600 ms-4">Don't have an account? <a href="{{ route('register') }}" class="text-teal-500 underline">Register</a></p>
             </div>
 
             <div class="flex items-center justify-end mt-4">

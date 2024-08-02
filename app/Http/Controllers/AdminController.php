@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Appointment;
 use App\Models\Doctor;
+use App\Models\VacationRequest;
 use App\Notifications\SendEmailNotif;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Notification;
@@ -151,6 +152,37 @@ class AdminController extends Controller
         Notification::send($data, new SendEmailNotif($details));
         return redirect()->route('showappointments')->with('msg', 'Email Sent successfully!');
     }
+
+    // vacation
+
+    public function viewVacationRequests()
+    {
+        $requests = VacationRequest::with('doctor')->get();
+        return view('admin.vacations', compact('requests'));
+    }
+
+    public function approveRequest($id)
+    {
+        $request = VacationRequest::find($id);
+        if ($request) {
+            $request->status = 'approved';
+            $request->save();
+            return redirect()->back()->with('success', 'Request approved successfully.');
+        }
+        return redirect()->back()->with('error', 'Request not found.');
+    }
+
+    public function rejectRequest($id)
+    {
+        $request = VacationRequest::find($id);
+        if ($request) {
+            $request->status = 'rejected';
+            $request->save();
+            return redirect()->back()->with('success', 'Request rejected successfully.');
+        }
+        return redirect()->back()->with('error', 'Request not found.');
+    }
+
 
 
 }

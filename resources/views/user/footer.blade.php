@@ -23,7 +23,7 @@
                     <h5>Our partner</h5>
                     <ul class="footer-menu">
                         <li><a href="#">One-Fitness</a></li>
-                        <li><a href="#">One-Drugs</a></li>
+                        <li><a href="#">One-pharmacy</a></li>
                         <li><a href="#">One-Live</a></li>
                     </ul>
                 </div>
@@ -31,7 +31,7 @@
                     <h5>Contact</h5>
                     <p class="footer-link mt-2">Boulevard Khalid Ibn Al Walid, Laayoune 70000</p>
                     <a href="#" class="footer-link">053646316</a>
-                    <a href="#" class="footer-link">healthcare@temporary.net</a>
+                    <a href="#" class="footer-link">onehealth37@gmail.com</a>
 
                     <h5 class="mt-3">Social Media</h5>
                     <div class="footer-sosmed mt-3">
@@ -46,7 +46,6 @@
 
             <hr>
 
-            <p id="copyright">Copyright &copy; {{ now()->year }} <a href="https://macodeid.com/"
-                    target="_blank">Azeddine Ait Waalla</a>. All right reserved</p>
+            <p id="copyright">Copyright &copy; {{ now()->year }} Azeddine Ait Waalla</a>. All right reserved</p>
         </div>
     </footer>

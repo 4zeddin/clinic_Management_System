@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+    <base href="/public">
     @include('admin.css')
 </head>
 
@@ -63,7 +64,7 @@
                                             </td>
                                             <td>
                                                 <a type="button" href='{{ route('doctor.delete', $row->id) }}'
-                                                    onclick="confirmDelete(event)" class="btn btn-danger">
+                                                     class="btn btn-danger">
                                                     <i class="bi bi-x-square"></i> Delete
                                                 </a>
                                             </td>

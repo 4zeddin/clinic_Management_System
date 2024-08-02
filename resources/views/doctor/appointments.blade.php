@@ -2,18 +2,17 @@
 <html lang="en">
 
 <head>
-    <base href="/public">
-    @include('admin.css')
+    @include('doctor.css')
 </head>
 
 <body>
     <div class="bg-black container-scroller">
         <!-- partial:partials/_sidebar.html -->
-        @include('admin.sidebar')
+        @include('doctor.sidebar')
         <!-- partial -->
         <div class="container-fluid ms-2 page-body-wrapper">
             <!-- partial:partials/_navbar.html -->
-            @include('admin.navbar')
+            @include('doctor.navbar')
             <!-- partial -->
             <div class="page-body-wrapper">
                 <div class="container">
@@ -52,24 +51,18 @@
                                             <td>{{ $row->phone }}</td>
                                             <td>{{ $row->date }}</td>
                                             <td>{{ $row->doctor }}</td>
-                                            <td>
-                                                    @switch($row->status)
-                                                        @case('In progress')
-                                                            <span class="badge badge-warning">Pending</span>
-                                                            @break
-                                                        @case('approved')
-                                                            <span class="badge badge-success">Approved</span>
-                                                            @break
-                                                        @case('canceled')
-                                                            <span class="badge badge-danger">Rejected</span>
-                                                            @break
-                                                    @endswitch
-                                                </td>
+                                            <td class="font-weight-bold @if($row->status == 'approved') text-success @elseif ($row->status == 'canceled') text-danger @else text-warning @endif">{{ $row->status }}</td>
                                             <td>{{ $row->message }}</td>
                                             <td>
-                                                <a type="button" href='{{ route('notify', $row->id) }}'
-                                                    onclick="return confirm('Are you sure')" class="btn btn-primary">
-                                                    <i class="bi bi-bell-fill"></i> notify
+                                                <a type="button" href='{{ route('doctor.approved', $row->id) }}'
+                                                    onclick="return confirm('Are you sure')" class="btn btn-success">
+                                                    approved
+                                                </a>
+                                            </td>
+                                            <td>
+                                                <a type="button" href='{{ route('doctor.canceled', $row->id) }}'
+                                                    onclick="return confirm('Are you sure')" class="btn btn-danger">
+                                                    canceled
                                                 </a>
                                             </td>
                                         </tr>
@@ -91,7 +84,7 @@
     </div>
     <!-- container-scroller -->
     <!-- plugins:js -->
-    @include('admin.script')
+    @include('doctor.script')
 </body>
 
 </html>

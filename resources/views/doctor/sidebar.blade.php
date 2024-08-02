@@ -8,12 +8,12 @@
             <div class="profile-desc">
               <div class="profile-pic">
                 <div class="count-indicator">
-                  <img loading="lazy" class="img-xs rounded-circle " src="admin/template/assets/images/faces/face15.jpg" alt="">
+                  <img loading="lazy" class="img-xs rounded-circle " src={{asset("admin/template/assets/images/faces/doc.png")}} alt="">
                   <span class="count bg-success"></span>
                 </div>
                 <div class="profile-name">
-                  <h5 class="mb-0 font-weight-normal">{{Auth::user()->name}}</h5>
-                  <span>Admin Member</span>
+                  <h5 class="mb-0 font-weight-normal">Dr. {{$doctor->name}}</h5>
+                  <span>Doctor</span>
                 </div>
               </div>
             </div>
@@ -22,23 +22,23 @@
             <span class="nav-link">Navigation</span>
           </li>
           <li class="nav-item menu-items">
-            <a class="nav-link" href="{{route('doctor.add')}}">
+            <a class="nav-link" href="{{route('doctor.profile')}}">
               <span class="menu-icon">
                 <i class="mdi mdi-contacts"></i>
               </span>
-              <span class="menu-title">Add Doctor</span>
+              <span class="menu-title">Profile</span>
             </a>
           </li>
           <li class="nav-item menu-items">
-            <a class="nav-link" href="{{route('show.doctors')}}">
+            <a class="nav-link" href="{{route('doctor.home')}}">
               <span class="menu-icon">
                 <i class="mdi mdi-file-document-box"></i>
               </span>
-              <span class="menu-title" >All Doctors</span>
+              <span class="menu-title" >Work Certificate</span>
             </a>
           </li>
           <li class="nav-item menu-items">
-            <a class="nav-link" href="{{route('showappointments')}}">
+            <a class="nav-link" href="{{route('doctor.appointments')}}">
               <span class="menu-icon">
                 <i class="mdi mdi-file-document-box"></i>
               </span>
@@ -46,11 +46,11 @@
             </a>
           </li>
           <li class="nav-item menu-items">
-            <a class="nav-link" href="{{route('doctor.vacation')}}">
+            <a class="nav-link" href="{{route('doctor.vacation.form')}}">
               <span class="menu-icon">
                 <i class="mdi mdi-file-document-box"></i>
               </span>
-              <span class="menu-title" >Vacation Requests</span>
+              <span class="menu-title" >Vacation Request</span>
             </a>
           </li>
         </ul>
