@@ -7,8 +7,7 @@ use App\Models\Doctor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
-
-use function Pest\Laravel\delete;
+use Illuminate\Support\Facades\Cache;
 
 class HomeController extends Controller
 {
@@ -23,8 +22,12 @@ class HomeController extends Controller
             if ($user->userType === '1') {
                 return redirect()->route('showappointments');
             } elseif ($user->userType === '0') {
-                $pickedDates = Appointment::pluck('date')->toArray();
-                $doctors = Doctor::all();
+                $pickedDates = Cache::remember('picked_dates', 60, function () {
+                    return Appointment::pluck('date')->toArray();
+                });
+                $doctors = Cache::remember('doctors', 60, function () {
+                    return Doctor::all();
+                });
                 return view('user.home', compact('doctors', 'pickedDates'));
             } else {
                 return redirect()->back()->withErrors('Unauthorized access.');
@@ -43,8 +46,12 @@ class HomeController extends Controller
 
     public function index()
     {
-        $pickedDates = Appointment::pluck('date')->toArray();
-        $doctors = Doctor::all();
+        $pickedDates = Cache::remember('picked_dates', 60, function () {
+            return Appointment::pluck('date')->toArray();
+        });
+        $doctors = Cache::remember('doctors', 60, function () {
+            return Doctor::all();
+        });
         return view('user.home', compact('doctors', 'pickedDates'));
     }
 
@@ -69,7 +76,9 @@ class HomeController extends Controller
     public function ShowAppointments(){
         if(Auth::check()){
             $userid = Auth::user()->id;
-            $appointments = Appointment::where('user_id', $userid)->get();
+            $appointments = Cache::remember("user_appointments_{$userid}", 60, function () use ($userid) {
+                return Appointment::where('user_id', $userid)->get();
+            });
             return view('user.my_apointments', compact('appointments'));
         } else {
             return redirect()->back();
@@ -80,7 +89,7 @@ class HomeController extends Controller
     {
         $data = Appointment::find($id);
         $data->delete();
-
+        Cache::forget('picked_dates');
         return redirect()->back()->with('msg', 'Appointment cancelled.');
 
     }

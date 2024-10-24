@@ -64,7 +64,7 @@
                                             </td>
                                             <td>
                                                 <a type="button" href='{{ route('doctor.delete', $row->id) }}'
-                                                     class="btn btn-danger">
+                                                    onclick=confirmDelete(event) class="btn btn-danger">
                                                     <i class="bi bi-x-square"></i> Delete
                                                 </a>
                                             </td>
