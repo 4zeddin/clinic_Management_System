@@ -60,6 +60,11 @@
 
         <map-section></map-section>
 
+        {{-- <appointment-section :doctors="{{ json_encode($doctors) }}" :pickedDates="{{ json_encode($pickedDates) }}"
+            :authUser="{{ Auth::check() ? json_encode(Auth::user()) : 'null' }}"
+            :isAuthenticated="{{ Auth::check() ? 'true' : 'false' }}">
+        </appointment-section> --}}
+
         @include('user.appointment')
 
         <footer-section></footer-section>

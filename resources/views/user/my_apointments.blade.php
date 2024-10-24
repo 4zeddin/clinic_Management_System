@@ -31,11 +31,13 @@
     
 
 </head>
-
+@vite('resources/js/app.js')
 <body>
 
     <!-- Back to top button -->
     <div class="back-to-top"></div>
+
+    <div id="app">
 
     @include('user.header')
     @if (session()->has('msg'))
@@ -90,7 +92,9 @@
     </div>
 
 
-    @include('user.footer')
+    <footer-section></footer-section>
+
+    </div>
 
     <script src="../assets/js/jquery-3.5.1.min.js"></script>
 

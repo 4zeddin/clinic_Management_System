@@ -53,8 +53,7 @@
                                         <a class="dropdown-item text-muted text-sm">Manage Account</a>
                                         <div class="dropdown-divider"></div>
                                         <a class="dropdown-item" href="{{ route('profile.show') }}">Profile</a>
-                                        <form method="POST" action="{{ route('logout') }}"
-                                            @click.prevent="$root.submit();">
+                                        <form method="POST" action="{{ route('logout') }}">
                                             @csrf
                                             <button type="submit" class="dropdown-item">Log Out</button>
                                         </form>
