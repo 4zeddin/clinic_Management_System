@@ -39,8 +39,8 @@ class SendEmailNotif extends Notification
         return (new MailMessage)
             ->greeting($this->details['greeting'])
             ->line($this->details['body'])
-            ->action($this->details['text'], $this->details['url'])
-            ->line($this->details['end']);
+            ->action('My appointments', url('/'))
+            ->line('Your Appointment is Confirmed');
     }
 
     /**

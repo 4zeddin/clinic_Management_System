@@ -19,7 +19,7 @@ class DoctorController extends Controller
     public function index()
     {
         $doctor = Auth::guard('doctor')->user();
-        return view('doctor.home', compact('doctor'));
+        return view('doctor.work_cert', compact('doctor'));
     }
 
     public function login(Request $request)
@@ -110,7 +110,7 @@ class DoctorController extends Controller
     {
         $doctor = Auth::guard('doctor')->user();
         $requests = VacationRequest::where('doctor_id', $doctor->id)->get();
-        return view('doctor.view_vacations', compact('requests','doctor'));
+        return view('doctor.vacations_history', compact('requests','doctor'));
     }
 
     //profile
@@ -125,7 +125,7 @@ class DoctorController extends Controller
     public function updateProfile(Request $request)
     {
         $id = Auth::guard('doctor')->id();
-        
+
         $doctor = Doctor::find($id);
 
         $doctor->name = $request->name;
@@ -142,7 +142,8 @@ class DoctorController extends Controller
         $doctor->save();
 
 
-        return redirect()->route('doctor.profile')->with('success', 'Profile updated successfully.');
+        return redirect()->back()->with('success', 'Profile Updated successfully.');
+
     }
 
     public function logout(Request $request)

@@ -1,87 +1,132 @@
-<!DOCTYPE html>
-<html lang="en">
+@extends('layouts.doctor')
 
-<head>
-    <base href="/public">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+@push('styles')
+    <style>
+        .image-container {
+            position: relative;
+            width: 220px;
+            height: 220px;
+            padding: 5px;
+            border: 3px solid #00b38f;
+            border-radius: 50%;
+            display: inline-block;
+            overflow: hidden;
+        }
 
-    @include('doctor.css')
-</head>
+        .image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+    </style>
+@endpush
 
-<body>
-    <div class="bg-black container-scroller">
-
-        <!-- partial:partials/_sidebar.html -->
-        @include('doctor.sidebar')
-        <!-- partial -->
-        <div class="container-fluid page-body-wrapper">
-            <!-- partial:partials/_navbar.html -->
-            @include('doctor.navbar')
-            <!-- partial -->
-            <div style="background-color: #191c24" class="container-fluid page-body-wrapper">
-                <div class="container col-8" aling="center">
-                    <form action="{{ route('doctor.profile.edit') }}" method="POST" enctype="multipart/form-data"
-                        class="mt-3">
-                        <h1 class="text-center text-muted my-4">Doctor Profile</h1>
-                        @if (session()->has('success'))
-                            <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
-                                {{ session()->get('success') }}
-                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                            </div>
-                        @endif
-                        @csrf
-                        <div class="form-group">
-                            <label for="exampleInputtext1" class="text-white">Doctor Name</label>
-                            <input type="text" name="name" value="{{ $doctor->name }}"
-                                class="form-control text-white" id="exampleInputtext1" placeholder="Enter Doctor Name"
-                                required>
-                        </div>
-                        <div class="form-group">
-                            <label for="exampleInputtext2" class="text-white">Phone</label>
-                            <input type="text" name="phone" value="{{ $doctor->phone }}"
-                                class="form-control text-white" id="exampleInputtext2" placeholder="Enter Phone Number"
-                                required>
-                        </div>
-                        <div class="form-group">
-                            <label for="inputGroupFileAddon01" class="text-white">Speciality</label>
-                            <input type="text" name="speciality" value="{{ $doctor->speciality }}"
-                                class="form-control text-white" id="exampleInputEmail1" aria-describedby="emailHelp"
-                                placeholder="Enter Email" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="exampleInputEmail1" class="text-white">Email address</label>
-                            <input type="email" name="email" value="{{ $doctor->email }}"
-                                class="form-control text-white" id="exampleInputEmail1" aria-describedby="emailHelp"
-                                placeholder="Enter Email" required>
-                        </div>
-                        <img loading="lazy" src="doctorImage/{{ $doctor->image }}" alt="Doctor Image"
-                            class="img-fluid rounded mb-3">
-                        <div class="form-group mb-3">
-                            <label for="inputGroupFileAddon01" class="text-white">Update image</label>
-                            <input type="file" name="image" class="form-control text-white" id="inputGroupFile01"
-                                aria-describedby="inputGroupFileAddon01" placeholder="Choose Doctor Image">
-                        </div>
-                        <button onclick="return confirm('Are you sure')" type="submit"
-                            class="btn btn-outline-primary mb-3" style="font-size: 1rem"><i class="bi bi-save"></i>
-                            Update</button>
-                    </form>
-
+@section('content')
+    <div class="latest-users my-5">
+        <div class="latest-users-header">
+            <h3 class="text-muted fw-semibold my-4">Doctor Profile</h3>
+            <x-animated-btn type="button" data-bs-toggle="modal" data-bs-target="#editProfileModal" color="#00b38f">Edit
+                Profile
+            </x-animated-btn>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-6 d-flex flex-column justify-content-center align-items-center">
+                <div class="image-container">
+                    <img loading="lazy" src="{{ asset('doctorImage/' . $doctor->image) }}" alt="Doctor Image">
                 </div>
             </div>
-            <!-- content-wrapper ends -->
-            <!-- partial:partials/_footer.html -->
-
-            <!-- partial -->
+            <div class="col-6 d-flex flex-column justify-content-center align-items-start">
+                <div class="mb-5">
+                    <h4 class="mb-3">Personel Information</h4>
+                    <span class="fw-semibold me-3">Name: </span><span>{{ $doctor->name }}</span><br>
+                    <span class="fw-semibold me-3">Speciality: </span><span>{{ $doctor->speciality }}</span>
+                </div>
+                <div>
+                    <h4 class="mb-3">Contact Information</h4>
+                    <i class="bi bi-envelope"></i> <span class="fw-semibold me-3">Email:
+                    </span><span>{{ $doctor->email }}</span><br>
+                    <i class="bi bi-telephone"></i> <span class="fw-semibold me-3">Phone:
+                    </span><span>{{ $doctor->phone }}</span>
+                </div>
+            </div>
         </div>
-        <!-- main-panel ends -->
     </div>
-    <!-- page-body-wrapper ends -->
-    </div>
-    <!-- container-scroller -->
-    <!-- plugins:js -->
-    @include('doctor.script')
-</body>
 
-</html>
+    {{-- Edit Modal --}}
+    <div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="editProfileModalLabel">Edit Profile</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="{{ route('doctor.profile.edit') }}" method="POST" enctype="multipart/form-data">
+                        @csrf
+                        <div class="mb-4">
+                            <div class="form-control">
+                                <input type="text" id="name{{ $doctor->id }}" name="name"
+                                    value="{{ $doctor->name }}" placeholder=" " required />
+                                <label for="name{{ $doctor->id }}">Doctor Name</label>
+                            </div>
+                            @error('name')
+                                <div class="alert alert-danger mt-2" role="alert">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="mb-4">
+                            <div class="form-control">
+                                <input type="text" id="phone{{ $doctor->id }}" name="phone"
+                                    value="{{ $doctor->phone }}" placeholder=" " required />
+                                <label for="phone{{ $doctor->id }}">Phone</label>
+                            </div>
+                            @error('phone')
+                                <div class="alert alert-danger mt-2" role="alert">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="mb-4">
+                            <div class="form-control">
+                                <input type="text" id="speciality{{ $doctor->id }}" name="speciality"
+                                    value="{{ $doctor->speciality }}" placeholder=" " required />
+                                <label for="speciality{{ $doctor->id }}">Speciality</label>
+                            </div>
+                            @error('speciality')
+                                <div class="alert alert-danger mt-2" role="alert">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="mb-4">
+                            <div class="form-control">
+                                <input type="email" id="email{{ $doctor->id }}" name="email"
+                                    value="{{ $doctor->email }}" placeholder=" " required />
+                                <label for="email{{ $doctor->id }}">Email address</label>
+                            </div>
+                            @error('email')
+                                <div class="alert alert-danger mt-2" role="alert">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <img loading="lazy" src="{{ asset('doctorImage/' . $doctor->image) }}" alt="Doctor Image"
+                            class="img-fluid w-25 h25 border border-success-subtle rounded mb-3" />
+
+                        <div class="mb-4">
+                            <div class="form-control">
+                                <input type="file" id="image{{ $doctor->id }}" name="image" placeholder=" " />
+                                <label for="image{{ $doctor->id }}">Update image</label>
+                            </div>
+                            @error('image')
+                                <div class="alert alert-danger mt-2" role="alert">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <div class="modal-footer">
+                            <x-button-arrow onclick="confirmDelete(event)">Update</x-button-arrow>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection

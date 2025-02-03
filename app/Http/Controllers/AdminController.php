@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Appointment;
 use App\Models\Doctor;
+use App\Models\User;
 use App\Models\VacationRequest;
 use App\Notifications\SendEmailNotif;
 use Illuminate\Http\Request;
@@ -13,13 +14,6 @@ use Livewire\Attributes\Validate;
 
 class AdminController extends Controller
 {
-    public function index()
-    {
-        return view('admin.add_doctor');
-    }
-    
-    
-    // ------------------------------------------- doctor funcs ------------------------------------------- 
 
     public function store(Request $request)
     {
@@ -49,13 +43,13 @@ class AdminController extends Controller
 
         return redirect()->back()->with('success', 'Doctor created successfully!');
     }
-    
+
     public function showdoctors()
     {
         $doctors = Doctor::all();
-        return view('admin.all_doctors', compact('doctors'));
+        return view('admin.doctors', compact('doctors'));
     }
-    
+
     public function deleteDoctors($id)
     {
         $data = Doctor::find($id);
@@ -94,17 +88,17 @@ class AdminController extends Controller
         }
         $doctor->save();
 
-        return redirect()->route('show.doctors')->with('msg', 'Doctor information updated successfully!');
+        return redirect()->route('doctors.index')->with('success', 'Doctor information updated successfully!');
     }
 
-    //  --------------------------------------  appointments funcs -------------------------------------------   
+    //  --------------------------------------  appointments funcs -------------------------------------------
 
     public function showAppointments()
     {
         $appointments = Appointment::all();
         return view('admin.my_appointment', compact('appointments'));
     }
-    
+
 
     public function approved($id)
     {
@@ -128,13 +122,14 @@ class AdminController extends Controller
             $data->status = "canceled";
             $data->save();
 
-            return redirect()->route('showappointments')->with('msg', 'Canceled successfully!');
+            return redirect()->route('showappointments')->with('success', 'Canceled successfully!');
         } else {
             return redirect()->back()->with('error', 'Appointment not found.');
         }
     }
 
-    public function notify($id) {
+    public function notify($id)
+    {
         $data = Appointment::find($id);
         return view('admin.sendEmail', compact('data'));
     }
@@ -145,12 +140,9 @@ class AdminController extends Controller
         $details = [
             'greeting' => $request->greeting,
             'body' => $request->body,
-            'text' => $request->text,
-            'url' => $request->url,
-            'end' => $request->end,
         ];
         Notification::send($data, new SendEmailNotif($details));
-        return redirect()->route('showappointments')->with('msg', 'Email Sent successfully!');
+        return redirect()->route('appointments.index')->with('success', 'Email Sent successfully!');
     }
 
     // vacation
@@ -182,7 +174,4 @@ class AdminController extends Controller
         }
         return redirect()->back()->with('error', 'Request not found.');
     }
-
-
-
 }

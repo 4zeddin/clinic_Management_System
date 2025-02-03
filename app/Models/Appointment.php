@@ -10,4 +10,15 @@ class appointment extends Model
 {
     use HasFactory;
     use Notifiable;
+
+    protected $fillable = [
+        'name',
+        'email',
+        'phone',
+        'date',
+        'doctor',
+        'status',
+        'user_id',
+        'message',
+    ];
 }

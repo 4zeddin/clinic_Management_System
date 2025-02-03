@@ -1,0 +1,113 @@
+:root {
+    --light-green: #00d9a5;
+    --dark-green: #00b38f;
+    --gray: rgba(110, 128, 122, 0.8);
+    --white: #ffffff;
+    --hover-gray: #6e807a;
+    --bg-color: #f5f9f6;
+    --red: #d33;
+    --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+* {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+::selection {
+    background-color: var(--light-green) !important;
+    color: #000 !important;
+}
+::-moz-selection {
+    background-color: var(--light-green) !important;
+    color: #000 !important;
+}
+
+@font-face {
+    font-family: "maicons";
+    src: url("../fonts/maicons.eot?c9nlkl");
+    src: url("../fonts/maicons.eot?c9nlkl#iefix") format("embedded-opentype"),
+        url("../fonts/maicons.ttf?c9nlkl") format("truetype"),
+        url("../fonts/maicons.woff?c9nlkl") format("woff"),
+        url("../fonts/maicons.svg?c9nlkl#maicons") format("svg");
+    font-weight: normal;
+    font-style: normal;
+    font-display: block;
+}
+
+body {
+    font-family: "maicons", Arial, sans-serif !important;
+}
+
+li {
+    list-style: none;
+}
+li a {
+    text-decoration: none;
+    color: inherit;
+}
+
+.table th,
+.table td {
+    text-align: start;
+    vertical-align: middle;
+}
+
+.costum-btn {
+    display: inline-flex;
+    width: fit-content;
+    align-items: center;
+    gap: 8px;
+    border: none;
+    text-decoration: none;
+    cursor: pointer;
+    color: var(--white);
+    background-color: var(--light-green);
+    padding: 8px 20px;
+    border-radius: 5px;
+    font-size: 16px;
+    box-shadow: var(--shadow-md);
+    transition: all 0.3s ease;
+}
+.costum-btn:hover {
+    background-color: var(--dark-green);
+    color: var(--white);
+    box-shadow: var(--shadow-lg);
+    gap: 15px;
+}
+
+
+/* Back to Top */
+.back-to-top-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    display: none;
+    padding: 10px 15px;
+    font-size: 16px;
+    border-radius: 50%;
+    border: none;
+    box-shadow: var(--shadow-md);
+    z-index: 1000;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+.back-to-top-btn.show {
+    display: block;
+    transform: translateY(0);
+    opacity: 1;
+}
+.back-to-top-btn:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg)
+}
+.btn-outline-success {
+    border-color: var(--light-green);
+    color: var(--light-green);
+}
+.btn-outline-success:hover {
+    background-color: var(--light-green);
+    color: white;
+}

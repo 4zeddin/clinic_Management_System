@@ -1,76 +1,132 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Appointment Form</title>
-    <!-- Flatpickr CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <!-- Include other CSS files here -->
-</head>
-<body>
-    <div class="page-section">
-        <div class="container">
-            <h1 class="text-center wow fadeInUp">Make an Appointment</h1>
+@extends('layouts.user')
 
-            <form class="main-form" action="{{ route('appointment.store') }}" method="POST">
+@push('styles')
+    <style>
+        .alert {
+            padding: 5px !important;
+        }
+    </style>
+@endpush
+
+@section('content')
+    <section class="appointment d-flex">
+        <div class="form-container">
+            <h1 class="mb-5 text-center">Make Appointment</h1>
+            <form class="form mx-auto" action="{{ route('appointments.home.store') }}" method="POST">
                 @csrf
-                <div class="row mt-5">
-                    <div class="col-12 col-sm-6 py-2 wow fadeInLeft">
-                        <input name="name" @if(auth()->check()) value="{{ Auth::user()->name }}" disabled @endif type="text" class="form-control" placeholder="Full name" style="background-color: #ffffff; color: #000000;">
-                        @if(auth()->check())
-                            <input type="hidden" name="name" value="{{ Auth::user()->name }}">
-                        @endif
+                @auth
+                    <input type="hidden" name="user_id" value="{{ auth()->user()->id }}" />
+                @endauth
+
+                <div class="row">
+                    <div class="col-lg-6 mb-4">
+                        <div class="form-control">
+                            <input type="text" id="name" name="name" placeholder=" "
+                                @auth value="{{ auth()->user()->name }}" @endauth required/>
+                            <label for="name">Name *</label>
+                        </div>
+                        @error('name')
+                            <div class="alert alert-danger mt-2" role="alert">{{ $message }}</div>
+                        @enderror
                     </div>
-                    <div class="col-12 col-sm-6 py-2 wow fadeInRight">
-                        <input name="email" type="text" @if(auth()->check()) value="{{ Auth::user()->email }}" disabled @endif class="form-control" placeholder="Email address.." style="background-color: #ffffff; color: #000000;">
-                        @if(auth()->check())
-                            <input type="hidden" name="email" value="{{ Auth::user()->email }}">
-                        @endif
+
+                    <div class="col-lg-6 mb-4">
+                        <div class="form-control date-input-wrapper">
+                            <input type="text" id="date" name="date" class="date-input" placeholder=" "
+                                value="{{ old('date') }}"  required/>
+                            <label for="date">Select Date *</label>
+                            <i class="bi bi-calendar4-week date-icon" id="date-icon" aria-label="Open date picker"></i>
+                        </div>
+                        @error('date')
+                            <div class="alert alert-danger mt-2" role="alert">{{ $message }}</div>
+                        @enderror
                     </div>
-                    <div class="col-12 col-sm-6 py-2 wow fadeInLeft" data-wow-delay="300ms">
-                        <input name="date" id="datepicker" type="text" placeholder="yyyy-mm-dd" class="form-control" style="background-color: #ffffff; color: #000000;">
+
+                    <div class="col-lg-6 mb-4">
+                        <div class="form-control">
+                            <input type="email" id="email" name="email" placeholder=" "
+                                @auth value="{{ auth()->user()->email }}" @endauth required/>
+                            <label for="email">Email *</label>
+                        </div>
+                        @error('email')
+                            <div class="alert alert-danger mt-2" role="alert">{{ $message }}</div>
+                        @enderror
                     </div>
-                    <div class="col-12 col-sm-6 py-2 wow fadeInRight" data-wow-delay="300ms">
-                        <select name="doctor" id="department" class="custom-select">
-                            <option>--- Select Doctor ---</option>
-                            @foreach ($doctors as $doctor)
-                                <option value="{{ $doctor->name }}">Dr. {{ $doctor->name }}<p class="text-muted"> -- Speciality: {{ $doctor->speciality }} -- 300dh/h</p></option>
-                            @endforeach
-                        </select>
+
+                    <div class="col-lg-6 mb-4">
+                        <div class="form-control">
+                            <select class="form-select" id="doctor" name="doctor" required>
+                                <option selected disabled>Select Doctor - speciality *</option>
+                                @foreach ($doctors as $doc)
+                                    <option value="{{ $doc->name }}" @selected(old('doctor') == $doc->name)>
+                                        {{ $doc->name }} {{ ' - ' }} {{ $doc->speciality }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        @error('doctor')
+                            <div class="alert alert-danger mt-2" role="alert">{{ $message }}</div>
+                        @enderror
                     </div>
-                    <div class="col-12 py-2 wow fadeInUp" data-wow-delay="300ms">
-                        <input name="phone" type="text" class="form-control" @if(auth()->check()) value="{{ Auth::user()->phone }}" disabled @endif placeholder="Number.." style="background-color: #ffffff; color: #000000;">
-                        @if(auth()->check())
-                            <input type="hidden" name="phone" value="{{ Auth::user()->phone }}">
-                        @endif
+
+                    <div class="col-12 mb-4">
+                        <div class="form-control">
+                            <input type="text" id="phone" name="phone" placeholder=" "
+                                @auth value="{{ auth()->user()->phone }}" @endauth required/>
+                            <label for="phone">Phone *</label>
+                        </div>
+                        @error('phone')
+                            <div class="alert alert-danger mt-2" role="alert">{{ $message }}</div>
+                        @enderror
                     </div>
-                    <div class="col-12 py-2 wow fadeInUp" data-wow-delay="300ms">
-                        <textarea name="message" id="message" class="form-control" rows="6" placeholder="Enter message.."></textarea>
+
+                    <div class="col-12 mb-4">
+                        <div class="form-control">
+                            <textarea id="message" name="message" rows="6" placeholder=" " required>{{ old('message') }}</textarea>
+                            <label for="message">Message *</label>
+                        </div>
+                        @error('message')
+                            <div class="alert alert-danger mt-2" role="alert">{{ $message }}</div>
+                        @enderror
                     </div>
                 </div>
 
-                @if(auth()->check())
-                    <button type="submit" class="btn btn-primary mt-3 wow zoomIn">Submit Request</button>
-                @else
-                    <button role="alert" type="button" class="alert alert-warning mt-3" disabled><i class="bi bi-exclamation-triangle"></i> Login Required To Make Appointment</button>
-                @endif
+                <div class="text-start">
+                    @auth
+                        <x-button-arrow type="submit">Send</x-button-arrow>
+                    @endauth
+                    @guest
+                        <div class="rounded p-3 mb-2 bg-warning-subtle text-warning-emphasis d-inline-block"><i
+                                class="bi bi-exclamation-triangle-fill"></i> Log In is Required to Make Appointment
+                        </div>
+                    @endguest
+                </div>
             </form>
-        </div>  
-    </div>
+        </div>
+    </section>
+@endsection
 
-    <!-- Flatpickr JS -->
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+@push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/litepicker/dist/litepicker.js"></script>
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener("DOMContentLoaded", function() {
+            const dateInput = document.getElementById("date");
+            const dateIcon = document.getElementById("date-icon");
+
             const pickedDates = @json($pickedDates);
 
-            flatpickr("#datepicker", {
-                minDate: "today",
-                disable: pickedDates.map(date => new Date(date)),
-                dateFormat: "Y-m-d"
+            console.log(pickedDates);
+
+            const picker = new Litepicker({
+                element: dateInput,
+                format: "YYYY-MM-DD",
+                minDate: new Date(),
+                lockDays: pickedDates,
+            });
+
+            dateIcon.addEventListener("click", function() {
+                picker.show();
             });
         });
     </script>
-</body>
-</html>
+@endpush

@@ -2,96 +2,90 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreAppointmentRequest;
 use App\Models\Appointment;
 use App\Models\Doctor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
-use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 class HomeController extends Controller
 {
     public function redirect()
     {
-
         // Check if the user is authenticated
         if (Auth::check()) {
             $user = Auth::user();
 
             // Check if the authenticated user is a regular user or admin
             if ($user->userType === '1') {
-                return redirect()->route('showappointments');
+                $users = User::orderBy('created_at', 'desc')->take(5)->get();
+                $appointments = Appointment::orderBy('created_at', 'desc')->take(5)->get();
+                return view('admin.dash', compact('users', 'appointments'));
             } elseif ($user->userType === '0') {
-                $pickedDates = Cache::remember('picked_dates', 60, function () {
-                    return Appointment::pluck('date')->toArray();
-                });
-                $doctors = Cache::remember('doctors', 60, function () {
-                    return Doctor::all();
-                });
+                $pickedDates = Appointment::pluck('date')->toArray();
+                $doctors = Doctor::all();
                 return view('user.home', compact('doctors', 'pickedDates'));
             } else {
                 return redirect()->back()->withErrors('Unauthorized access.');
             }
         }
 
-        // Check if the authenticated user is a doctor
+        // Check if the authenticated user is a Doctor
         $doctor = Doctor::where('email', Auth::user()->email)->first();
         if ($doctor) {
             return redirect()->route('doctor.home');
         }
 
-        // Redirect back if the user is not authenticated
         return redirect()->back();
     }
 
     public function index()
     {
-        $pickedDates = Cache::remember('picked_dates', 60, function () {
-            return Appointment::pluck('date')->toArray();
-        });
-        $doctors = Cache::remember('doctors', 60, function () {
-            return Doctor::all();
-        });
-        return view('user.home', compact('doctors', 'pickedDates'));
+        $doctors = Doctor::all();
+        return view('user.home', compact('doctors'));
     }
 
-    public function StoreAppointments(Request $request){
-        $appointments = new Appointment();
-        $appointments ->name = $request->input('name');
-        $appointments ->email = $request->input('email');
-        $appointments ->phone = $request->input('phone');
-        $appointments ->date = $request->input('date');
-        $appointments->doctor = $request->input('doctor');
-        if (Auth::id()){
-            $appointments ->user_id = Auth::user()->id;
-        }else{
-            $appointments ->user_id = null;
+    public function indexAppointment()
+    {
+        $pickedDates = Appointment::where('date', '>=', now()->toDateString())->pluck('date')->toArray();
+        $doctors = Doctor::all();
+        return view('user.appointment', compact('pickedDates', 'doctors'));
+    }
+
+    public function StoreAppointments(StoreAppointmentRequest $request)
+    {
+        try {
+            Appointment::create($request->validated());
+
+            return redirect()->route('appointments.index')
+                ->with('success', 'Appointment requested successfully. We will contact you soon.');
+        } catch (\Exception $e) {
+            Log::error('Error storing appointment: ' . $e->getMessage());
+            return redirect()->back()
+                ->with('error', 'Something went wrong. Please try again later.');
         }
-        $appointments->message = $request->input('message');
-        $appointments->save();
-
-        return redirect()->back()->with('success', 'Appointment Request Successful . We Will contact with you soon');
     }
 
-    public function ShowAppointments(){
-        if(Auth::check()){
+    public function ShowAppointments()
+    {
+        if (Auth::check()) {
             $userid = Auth::user()->id;
-            $appointments = Cache::remember("user_appointments_{$userid}", 60, function () use ($userid) {
-                return Appointment::where('user_id', $userid)->get();
-            });
+            $appointments = Appointment::where('user_id', $userid)->get();
             return view('user.my_apointments', compact('appointments'));
         } else {
             return redirect()->back();
-        }       
+        }
     }
 
     public function DeleteAppointments($id)
     {
         $data = Appointment::find($id);
-        $data->delete();
-        Cache::forget('picked_dates');
-        return redirect()->back()->with('msg', 'Appointment cancelled.');
-
+        if ($data) {
+            $data->delete();
+            return redirect()->back()->with('success', 'Appointment cancelled.');
+        }
+        return redirect()->back()->with('error', 'Appointment Not Found.');
     }
-
 }

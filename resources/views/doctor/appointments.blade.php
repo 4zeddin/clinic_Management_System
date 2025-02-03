@@ -1,90 +1,122 @@
-<!DOCTYPE html>
-<html lang="en">
+@extends('layouts.doctor')
 
-<head>
-    @include('doctor.css')
-</head>
-
-<body>
-    <div class="bg-black container-scroller">
-        <!-- partial:partials/_sidebar.html -->
-        @include('doctor.sidebar')
-        <!-- partial -->
-        <div class="container-fluid ms-2 page-body-wrapper">
-            <!-- partial:partials/_navbar.html -->
-            @include('doctor.navbar')
-            <!-- partial -->
-            <div class="page-body-wrapper">
-                <div class="container">
-                    @if (session()->has('success'))
-                        <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
-                            {{ session()->get('success') }}
-                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                    @endif
-                    @if ($appointments->isEmpty())
-                        <div class="text-center my-5">
-                            <h1 class="font-bold">No appointments !</h1>
-                        </div>
-                    @else
-                        <div class="table-responsive mt-4 mx-auto" style="width: 1000px; overflow-x: auto;">
-                            <table class="table table-dark table-striped border text-white">
-                                <thead>
-                                    <tr>
-                                        <th>Client Name</th>
-                                        <th>Email</th>
-                                        <th>Phone</th>
-                                        <th>Date</th>
-                                        <th>Doctor</th>
-                                        <th>Status</th>
-                                        <th>Message</th>
-                                        <th colspan="3">Actions</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($appointments as $row)
-                                        <tr>
-                                            <td>{{ $row->name }}</td>
-                                            <td>{{ $row->email }}</td>
-                                            <td>{{ $row->phone }}</td>
-                                            <td>{{ $row->date }}</td>
-                                            <td>{{ $row->doctor }}</td>
-                                            <td class="font-weight-bold @if($row->status == 'approved') text-success @elseif ($row->status == 'canceled') text-danger @else text-warning @endif">{{ $row->status }}</td>
-                                            <td>{{ $row->message }}</td>
-                                            <td>
-                                                <a type="button" href='{{ route('doctor.approved', $row->id) }}'
-                                                    onclick="return confirm('Are you sure')" class="btn btn-success">
-                                                    approved
-                                                </a>
-                                            </td>
-                                            <td>
-                                                <a type="button" href='{{ route('doctor.canceled', $row->id) }}'
-                                                    onclick="return confirm('Are you sure')" class="btn btn-danger">
-                                                    canceled
-                                                </a>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                    @endif
-                </div>
-            </div>
-            <!-- content-wrapper ends -->
-            <!-- partial:partials/_footer.html -->
-
-            <!-- partial -->
+@section('content')
+    <div class="latest-users my-5">
+        <div class="latest-users-header">
+            <h4>Appointments</h4>
         </div>
-        <!-- main-panel ends -->
-    </div>
-    <!-- page-body-wrapper ends -->
-    </div>
-    <!-- container-scroller -->
-    <!-- plugins:js -->
-    @include('doctor.script')
-</body>
+        <hr>
+        @if ($appointments->isEmpty())
+            <div class="text-center">
+                <h3 class="font-bold">No appointments !</h3>
+            </div>
+        @else
+            <div class="table-responsive mt-4">
+                <table class="table border">
+                    <thead>
+                        <tr>
+                            <th>Client Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                            <th>Date</th>
+                            <th>Doctor</th>
+                            <th>Status</th>
+                            <th>Message</th>
+                            <th colspan="3">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($appointments as $appointment)
+                            <tr>
+                                <td>{{ $appointment->name }}</td>
+                                <td>{{ $appointment->email }}</td>
+                                <td>{{ $appointment->phone }}</td>
+                                <td>{{ $appointment->date }}</td>
+                                <td>{{ $appointment->doctor }}</td>
+                                <td>
+                                    @switch($appointment->status)
+                                        @case('In progress')
+                                            <span class="badge rounded-pill text-bg-warning">Pending</span>
+                                        @break
 
-</html>
+                                        @case('approved')
+                                            <span class="badge rounded-pill text-bg-success">Approved</span>
+                                        @break
+
+                                        @case('canceled')
+                                            <span class="badge rounded-pill text-bg-danger">Rejected</span>
+                                        @break
+
+                                        @default
+                                            <span class="badge rounded-pill text-bg-dark">Unknown Status</span>
+                                    @endswitch
+                                </td>
+                                <td>{{ $appointment->message }}</td>
+                                <td>
+                                    <a
+                                        type="button"onclick="confirmAction(event, '{{ route('doctor.approved', $appointment->id) }}')">
+                                        <x-animated-btn color="#00b38f">approve</x-animated-btn>
+                                    </a>
+                                </td>
+                                <td>
+                                    <a
+                                        type="button"onclick="confirmAction(event, '{{ route('doctor.canceled', $appointment->id) }}')">
+                                        <x-animated-btn>cancel</x-animated-btn>
+                                    </a>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+        @endif
+    </div>
+
+@endsection
+
+@push('scripts')
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        function confirmAction(event, url) {
+            event.preventDefault();
+
+            Swal.fire({
+                title: 'Are you sure?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Yes',
+                cancelButtonText: 'Cancel',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: url,
+                        type: 'GET',
+                        data: {
+                            _token: "{{ csrf_token() }}"
+                        },
+                        success: function(response) {
+                            Swal.fire({
+                                title: 'Success!',
+                                text: response.message,
+                                icon: 'success',
+                                timer: 2000,
+                                showConfirmButton: false
+                            }).then(() => {
+                                location.reload();
+                            });
+                        },
+                        error: function(xhr) {
+                            Swal.fire({
+                                title: 'Error!',
+                                text: xhr.responseJSON?.message || 'Something went wrong!',
+                                icon: 'error',
+                            });
+                        }
+                    });
+                }
+            });
+        }
+    </script>
+@endpush

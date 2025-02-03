@@ -1,0 +1,200 @@
+body {
+    background: var(--bg-color);
+    display: flex;
+}
+
+/* sidebar */
+.sidebar {
+    position: sticky;
+    padding: 0.5rem 1.5rem;
+    top: 0;
+    left: 0;
+    width: 100px;
+    height: 100vh;
+    color: var(--white);
+    background: var(--dark-green);
+    transition: all 0.5s linear;
+    overflow: hidden;
+}
+
+.sidebar:hover {
+    width: 240px;
+    transition: 0.5s;
+}
+
+.menu {
+    height: 100%;
+    display: flex;
+    position: relative;
+    padding: 0;
+    transition: all 0.5s ease-in-out;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.menu li {
+    padding: 0.8rem 1rem;
+    cursor: pointer;
+    margin-block: 8px;
+    border-radius: 8px;
+    transition: all 0.5s ease-in-out;
+}
+
+.sidebar li:hover,
+.active {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.menu a {
+    font-size: 14px;
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+}
+
+.menu a span {
+    overflow: hidden;
+}
+
+.menu a i {
+    font-size: 1.2rem;
+}
+
+.main-content {
+    flex-grow: 1;
+}
+
+header {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--white);
+    padding: 24px;
+    border-radius: 16px;
+    box-shadow: var(--shadow-md);
+}
+
+/* Stats */
+.stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+}
+
+.stat-card {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 24px;
+    border-radius: 16px;
+    box-shadow: var(--shadow-md);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, var(--dark-green), var(--light-green));
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+}
+
+.stat-card h3 {
+    color: var(--text-secondary);
+    font-size: 14px;
+    margin-bottom: 12px;
+    font-weight: 500;
+}
+
+.stat-value {
+    display: flex;
+    justify-content: space-between;
+    font-size: 28px;
+    font-weight: 600;
+    align-items: baseline;
+    gap: 8px;
+    color: var(--dark-green);
+    background: rgba(16, 185, 129, 0.1);
+    border-radius: 6px;
+    padding: 4px 8px;
+}
+
+.latest-users {
+    background: var(--white);
+    padding: 24px;
+    border-radius: 16px;
+    box-shadow: var(--shadow-md);
+}
+
+.latest-users-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.latest-users-header .title {
+    font-size: 1.25rem;
+    font-weight: 600;
+}
+
+/* Focus styles for inputs and select */
+.appointment .form .form-control:focus,
+.form-select:focus {
+    border-color: var(--hover-gray) !important;
+    box-shadow: 0 0 0 0 !important;
+}
+.form-control {
+    position: relative;
+    padding: 0 !important;
+}
+
+/* Input field styling */
+.form-control input, .form-select select
+.form-control textarea {
+    width: 100%;
+    padding: 0.475rem 0.75rem !important;
+    font-size: 16px;
+    border: none;
+    border-radius: 4px;
+    outline: none;
+    transition: border-color 0.3s ease;
+    color: var(--hover-gray) !important;
+    background: #f8f8f8;
+}
+
+/* Floating label animation */
+.form-control input:not(:placeholder-shown) + label,
+.form-control textarea:not(:placeholder-shown) + label,
+.form-control input:focus + label,
+.form-control textarea:focus + label {
+    top: -10px;
+    left: 10px;
+    font-size: 12px;
+    color: var(--hover-gray);
+    background: white;
+    padding: 0 5px;
+    transition: all 0.3s ease;
+}
+
+/* Label styling */
+.form-control label {
+    position: absolute;
+    top: 0.475rem;
+    left: 0.75rem;
+    font-size: 16px;
+    color: #999;
+    pointer-events: none;
+    transition: all 0.3s ease;
+}
+
+.alert {
+    padding: 5px !important;
+}

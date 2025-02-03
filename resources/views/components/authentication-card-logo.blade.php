@@ -1,3 +1,5 @@
-<a href="/">
-    <h3 style="color: black" class="font-weight-bold"><span style="color: #00d9a5">One</span>-Health</h3>
+<a href="/" style="font-size: 1.6rem;">
+    <h2 class="font-bold text-black">
+        <span class="text-[#00d9a5]">One</span>-Health
+    </h2>
 </a>
